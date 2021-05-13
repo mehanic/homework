@@ -1,0 +1,30 @@
+- hosts: all
+  tasks:
+  - name: Creating an empty file
+    file:
+      path: "/etc/iaac"
+      state: touch
+      mode: 0500
+      owner: root
+  - debug:
+      msg: "System {{ inventory_hostname }} has uuid {{ ansible_product_uuid }}"
+
+  - debug:
+      msg: "System {{ inventory_hostname }} has gateway {{ ansible_default_ipv4.gateway }}"
+    when: ansible_default_ipv4.gateway is defined
+
+  - shell: /usr/bin/uptime
+    register: result
+  - debug: msg="{{ result.stdout }}"
+    
+  - name: What is my inventory_hostname
+    debug: var={{inventory_hostname}}  
+  
+  - name: What is my ansible_hostname
+    debug: var={{ansible_hostname}}
+
+  - name: Check Dist Version
+    shell: cat /etc/os-release
+    register: response
+
+  - debug: msg="{{ response.stdout }}"  
